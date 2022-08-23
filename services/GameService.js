@@ -1,25 +1,30 @@
-import Game from "../models/Game.js";
 import GameRepository from "../repositories/GameRepository.js";
 import { NotFoundError } from "../errors/errors.js";
 
 class GameService {
-    static async getNextQuestion(id){
-        
-        const game = GameRepository.getById(id);
-        
-        const {availableQuestions, answerdQuestions} = game;
-
+    static async getNextQuestion(id){    
+        const game = await GameRepository.getById(id);   
         if(game.isOver)
-            throw Error("Não tem mais perguntas não respondidas!")
+            throw Error("Não tem mais perguntas não respondidas!")             
+        
+        const randomIndex = (Math.random() * game.getAvailableQuestions().length) | 0;
 
-        const randomIndex = (Math.random() * availableQuestions.length) | 0;
-        const question = availableQuestions[randomIndex];
+        const notResponded = game.getNotRespondedQuestion();
+        if(notResponded.length > 0)
+            throw Error("Usuário tem questões não respondidas")
+        
+        const question = game.getNextAvailableQuestion(randomIndex);
 
-        availableQuestions = availableQuestions.splice(randomIndex-1, 1);
-        answerdQuestions.
-        GameRepository.update(game)
+        await GameRepository.update(game);
         
         return question;
+    }
+
+    static async answerQuestion(gameId, questionId, answerId){
+        const game = await GameRepository.getById(gameId);
+
+        game.answerQuestion(questionId, answerId);
+        const rightAnswer = question.answers.filter(x => x._id == answerId || x.isCorrect == true);
     }
 }
 

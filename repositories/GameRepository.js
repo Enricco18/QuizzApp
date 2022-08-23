@@ -21,11 +21,11 @@ class GameRepository{
 
     static async update({_id, answerdQuestions, availableQuestions, total, correct, wrong, isOver}){
         Game.validateId(_id);
-        const game = await Game.findOne({_id});
+        let game = await Game.findOne({_id});
         if(!game)
             throw new NotFoundError();
 
-        game = { answerdQuestions, availableQuestions, total, correct, wrong, isOver};
+        game = Object.assign(game, { answerdQuestions, availableQuestions, total, correct, wrong, isOver});
         game._id = _id;
         game.save();
     }

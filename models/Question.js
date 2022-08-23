@@ -22,7 +22,12 @@ const QuestionMethods =  {
     methods:{
         validateEntity: function(){
             console.log(this.answers)
+        },
+        getCorrectAnswer: function(){
+            const rightAnswer = this.answers.filter(x => x.isCorrect == true);
+            return rightAnswer;
         }
+        
     }
 
 }
